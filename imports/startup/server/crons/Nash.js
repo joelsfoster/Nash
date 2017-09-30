@@ -27,7 +27,7 @@ export const Nash = async () => {
 
   // <------------------------------------------------------------------------->
   // PART 1: Load up everything that's needed using a promise that throws a timeout if any part takes longer than "n" seconds
-  const TIMEOUT = 5000; 
+  const TIMEOUT = 5000;
 
   const getPrimaryBalance = new Promise( (resolve, reject) => {
     setTimeout(reject, TIMEOUT, 'getPrimaryBalance');
