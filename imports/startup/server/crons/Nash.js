@@ -245,6 +245,8 @@ export const Nash = async () => {
   // ~~~ TRINITY ~~~
   // (Volume checks are always in BTC equivalent, converted backwards)
 
+  const MINIMUM_RETURN_RATE = .0001; // .01% return
+
   // PERMUTATION ONE
   // Primary has BTC (buy ETH with BTC), Tertiary has ETH (buy LTC with ETH), Secondary has LTC (sell LTC for BTC)
   const permutationOneReturnRate = (1 / primaryETHAsk / tertiaryLTCAsk * secondaryLTCBid) - (1 + REGULAR_FEES);
@@ -258,8 +260,7 @@ export const Nash = async () => {
   const permutationOneFirstTradeAmount = (permutationOneTradeVolume / primaryETHAsk).toFixed(GENERAL_DECIMAL_POINTS); // BTC -> ETH
   const permutationOneSecondTradeAmount = (permutationOneTradeVolume / primaryETHAsk / tertiaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> ETH -> LTC
   const permutationOneThirdTradeAmount = (permutationOneTradeVolume / primaryETHAsk / tertiaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> ETH -> LTC
-  const permutationOneReturn = (1 + permutationOneReturnRate) * permutationOneTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
-  const permutationOneOpportunity = permutationOneReturn > permutationOneTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
+  const permutationOneReturn = (permutationOneReturnRate > MINIMUM_RETURN_RATE) ? (permutationOneReturnRate * permutationOneTradeVolume) : 0;
 
   // PERMUTATION TWO
   // Secondary has BTC (buy LTC with BTC), Tertiary has LTC (sell LTC for ETH), Primary has ETH (sell ETH for BTC)
@@ -274,8 +275,7 @@ export const Nash = async () => {
   const permutationTwoFirstTradeAmount = (permutationTwoTradeVolume / secondaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> LTC
   const permutationTwoSecondTradeAmount = (permutationTwoTradeVolume / secondaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> LTC
   const permutationTwoThirdTradeAmount = (permutationTwoTradeVolume / secondaryLTCAsk * tertiaryLTCBid).toFixed(GENERAL_DECIMAL_POINTS); // BTC -> LTC -> ETH
-  const permutationTwoReturn = (1 + permutationTwoReturnRate) * permutationTwoTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
-  const permutationTwoOpportunity = permutationTwoReturn > permutationTwoTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
+  const permutationTwoReturn = (permutationTwoReturnRate > MINIMUM_RETURN_RATE) ? (permutationTwoReturnRate * permutationTwoTradeVolume) : 0;
 
   // PERMUTATION THREE
   // Secondary has BTC (buy ETH with BTC), Tertiary has ETH (buy LTC with ETH), Primary has LTC (sell LTC for BTC)
@@ -290,8 +290,7 @@ export const Nash = async () => {
   const permutationThreeFirstTradeAmount = (permutationThreeTradeVolume / secondaryETHAsk).toFixed(GENERAL_DECIMAL_POINTS); // BTC -> ETH
   const permutationThreeSecondTradeAmount = (permutationThreeTradeVolume / secondaryETHAsk / tertiaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> ETH -> LTC
   const permutationThreeThirdTradeAmount = (permutationThreeTradeVolume / secondaryETHAsk / tertiaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> ETH -> LTC
-  const permutationThreeReturn = (1 + permutationThreeReturnRate) * permutationThreeTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
-  const permutationThreeOpportunity = permutationThreeReturn > permutationThreeTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
+  const permutationThreeReturn = (permutationThreeReturnRate > MINIMUM_RETURN_RATE) ? (permutationThreeReturnRate * permutationThreeTradeVolume) : 0;
 
   // PERMUTATION FOUR
   // Primary has BTC (buy LTC with BTC), Tertiary has LTC (sell LTC for ETH), Secondary has ETH (sell ETH for BTC)
@@ -306,8 +305,7 @@ export const Nash = async () => {
   const permutationFourFirstTradeAmount = (permutationFourTradeVolume / primaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> LTC
   const permutationFourSecondTradeAmount = (permutationFourTradeVolume / primaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> LTC
   const permutationFourThirdTradeAmount = (permutationFourTradeVolume / primaryLTCAsk * tertiaryLTCBid).toFixed(GENERAL_DECIMAL_POINTS); // BTC -> LTC -> ETH
-  const permutationFourReturn = (1 + permutationFourReturnRate) * permutationFourTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
-  const permutationFourOpportunity = permutationFourReturn > permutationFourTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
+  const permutationFourReturn = (permutationFourReturnRate > MINIMUM_RETURN_RATE) ? (permutationFourReturnRate * permutationFourTradeVolume) : 0;
 
   // PERMUTATION FIVE
   // Primary has BTC (buy ETH with BTC), Tertiary has ETH (buy LTC with ETH), Primary has LTC (sell LTC for BTC)
@@ -322,8 +320,7 @@ export const Nash = async () => {
   const permutationFiveFirstTradeAmount = (permutationFiveTradeVolume / primaryETHAsk).toFixed(GENERAL_DECIMAL_POINTS); // BTC -> ETH
   const permutationFiveSecondTradeAmount = (permutationFiveTradeVolume / primaryETHAsk / tertiaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> ETH -> LTC
   const permutationFiveThirdTradeAmount = (permutationFiveTradeVolume / primaryETHAsk / tertiaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> ETH -> LTC
-  const permutationFiveReturn = (1 + permutationFiveReturnRate) * permutationFiveTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
-  const permutationFiveOpportunity = permutationFiveReturn > permutationFiveTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
+  const permutationFiveReturn = (permutationFiveReturnRate > MINIMUM_RETURN_RATE) ? (permutationFiveReturnRate * permutationFiveTradeVolume) : 0;
 
   // PERMUTATION SIX
   // Primary has BTC (buy LTC with BTC), Tertiary has LTC (sell LTC for ETH), Primary has ETH (sell ETH for BTC)
@@ -338,53 +335,47 @@ export const Nash = async () => {
   const permutationSixFirstTradeAmount = (permutationSixTradeVolume / primaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> LTC
   const permutationSixSecondTradeAmount = (permutationSixTradeVolume / primaryLTCAsk).toFixed(LTC_DECIMAL_POINTS); // BTC -> LTC
   const permutationSixThirdTradeAmount = (permutationSixTradeVolume / primaryLTCAsk * tertiaryLTCBid).toFixed(GENERAL_DECIMAL_POINTS); // BTC -> LTC -> ETH
-  const permutationSixReturn = (1 + permutationSixReturnRate) * permutationSixTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
-  const permutationSixOpportunity = permutationSixReturn > permutationSixTradeVolume.toFixed(GENERAL_DECIMAL_POINTS);
+  const permutationSixReturn = (permutationSixReturnRate > MINIMUM_RETURN_RATE) ? (permutationSixReturnRate * permutationSixTradeVolume) : 0;
 
-
+  /*
   console.log('==========');
-  console.log('PERMUTATION SIX:');
+  console.log('PERMUTATION SIX');
   console.log('permutationSixReturnRate:', permutationSixReturnRate);
+  console.log('permutationSixReturn (BTC):', (permutationSixReturnRate * permutationSixTradeVolume), 'vs', permutationSixTradeVolume);
   console.log('permutationSixTradeVolume:', permutationSixTradeVolume);
   console.log('permutationSixFirstTradeBTCValue:', permutationSixFirstTradeBTCValue);
   console.log('permutationSixSecondTradeBTCValue:', permutationSixSecondTradeBTCValue);
   console.log('permutationSixThirdTradeBTCValue:', permutationSixThirdTradeBTCValue);
-  console.log('permutationSixFirstTradeVolume:', permutationSixFirstTradeVolume);
+  console.log('permutationSixThirdTradeVolume (ETH):', (primaryETHBalance * (1 - PRIMARY_FEE)), 'vs', primaryETHBidVolume);
   console.log('==========');
 
+  console.log('==========');
+  console.log('TRADE PROFIT RATES');
+  console.log('ONE:  ', permutationOneReturn, 'profit (BTC) |', permutationOneReturnRate, '*', permutationOneTradeVolume);
+  console.log('TWO:  ', permutationTwoReturn, 'profit (BTC) |', permutationTwoReturnRate, '*', permutationTwoTradeVolume);
+  console.log('THREE:', permutationThreeReturn, 'profit (BTC) |', permutationThreeReturnRate, '*', permutationThreeTradeVolume);
+  console.log('FOUR: ', permutationFourReturn, 'profit (BTC) |', permutationFourReturnRate, '*', permutationFourTradeVolume);
+  console.log('FIVE: ', permutationFiveReturn, 'profit (BTC) |', permutationFiveReturnRate, '*', permutationFiveTradeVolume);
+  console.log('SIX:  ', permutationSixReturn, 'profit (BTC) |', permutationSixReturnRate, '*', permutationSixTradeVolume);
+  console.log('==========');
+  */
 
   // <------------------------------------------------------------------------->
   // PART 3: Execution sequence. First try to execute Trinity, then NashLTC, then NashETH
 
   // ~~~ TRINITY ~~~
   // PART 3.1: Identify which Trinity permutation has the highest return (taking volume into account) and execute those trades
-  const highestReturnRate = Math.max(permutationOneReturnRate, permutationTwoReturnRate, permutationThreeReturnRate, permutationFourReturnRate, permutationFiveReturnRate, permutationSixReturnRate);
   const highestReturn = Math.max(permutationOneReturn, permutationTwoReturn, permutationThreeReturn, permutationFourReturn, permutationFiveReturn, permutationSixReturn);
-  const MINIMUM_RETURN_RATE = .0001; // .01% return
-  const MINIMUM_BTC_TRADE_VOLUME = .01; // Because we don't want to trade .001 LTC for example
+  const MINIMUM_BTC_TRADE_VOLUME = .001; // Because we don't want to trade .001 LTC (in equivalent BTC volume) for example
 
-  if (highestReturnRate > MINIMUM_RETURN_RATE) {
-
-    if (highestReturn === permutationOneReturnRate) {
-      console.log('highestReturn=one', permutationOneReturnRate + '%', 'profit (BTC):', permutationOneReturn);
-    } else if (highestReturn === permutationTwoReturnRate) {
-      console.log('highestReturn=two', permutationTwoReturnRate + '%', 'profit (BTC):', permutationTwoReturn);
-    } else if (highestReturn === permutationThreeReturnRate) {
-      console.log('highestReturn=three', permutationThreeReturnRate + '%', 'profit (BTC):', permutationThreeReturn);
-    } else if (highestReturn === permutationFourReturnRate) {
-      console.log('highestReturn=four', permutationFourReturnRate + '%', 'profit (BTC):', permutationFourReturn);
-    } else if (highestReturn === permutationFiveReturnRate) {
-      console.log('highestReturn=five', permutationFiveReturnRate + '%', 'profit (BTC):', permutationFiveReturn);
-    } else if (highestReturn === permutationSixReturnRate) {
-      console.log('highestReturn=six', permutationSixReturnRate + '%', 'profit (BTC):', permutationSixReturn);
-    }
+  if (highestReturn > 0) {
 
     // PERMUTATION ONE
     // Primary has BTC (buy ETH with BTC), Tertiary has ETH (buy LTC with ETH), Secondary has LTC (sell LTC for BTC)
-    if ((permutationOneOpportunity && permutationOneTradeVolume > MINIMUM_BTC_TRADE_VOLUME) && highestReturn === permutationOneReturn) {
+    if (permutationOneTradeVolume > MINIMUM_BTC_TRADE_VOLUME && highestReturn === permutationOneReturn) {
 
       console.log('*** TRINITY ***');
-      console.log(permutationOneReturnRate, 'is the highest return (permutationOne):', (permutationOneReturn - permutationOneTradeVolume), 'BTC profit');
+      console.log(permutationOneReturnRate, 'is the highest return (permutationOne):', permutationOneReturn, 'BTC profit');
 
       console.log('Buying', permutationOneFirstTradeAmount, 'ETH/BTC from', PRIMARY_MARKET['id'], 'at', primaryETHAsk);
       console.log('Buying', permutationOneSecondTradeAmount, 'LTC/ETH from', TERTIARY_MARKET['id'], 'at', tertiaryLTCAsk);
@@ -438,10 +429,10 @@ export const Nash = async () => {
 
       // PERMUTATION TWO
       // Secondary has BTC (buy LTC with BTC), Tertiary has LTC (sell LTC for ETH), Primary has ETH (sell ETH for BTC)
-    } else if ((permutationTwoOpportunity && permutationTwoTradeVolume > MINIMUM_BTC_TRADE_VOLUME) && highestReturn === permutationTwoReturn) {
+    } else if (permutationTwoTradeVolume > MINIMUM_BTC_TRADE_VOLUME && highestReturn === permutationTwoReturn) {
 
       console.log('*** TRINITY ***');
-      console.log(permutationTwoReturnRate, 'is the highest return (permutationTwo):', (permutationTwoReturn - permutationTwoTradeVolume), 'BTC profit');
+      console.log(permutationTwoReturnRate, 'is the highest return (permutationTwo):', permutationTwoReturn, 'BTC profit');
 
       console.log('Buying', permutationTwoFirstTradeAmount, 'LTC/BTC from', SECONDARY_MARKET['id'], 'at', secondaryLTCAsk);
       console.log('Selling', permutationTwoSecondTradeAmount, 'LTC/ETH from', TERTIARY_MARKET['id'], 'at', tertiaryLTCBid);
@@ -495,10 +486,10 @@ export const Nash = async () => {
 
       // PERMUTATION THREE
       // Secondary has BTC (buy ETH with BTC), Tertiary has ETH (buy LTC with ETH), Primary has LTC (sell LTC for BTC)
-    } else if ((permutationThreeOpportunity && permutationThreeTradeVolume > MINIMUM_BTC_TRADE_VOLUME) && highestReturn === permutationThreeReturn) {
+    } else if (permutationThreeTradeVolume > MINIMUM_BTC_TRADE_VOLUME && highestReturn === permutationThreeReturn) {
 
       console.log('*** TRINITY ***');
-      console.log(permutationThreeReturnRate, 'is the highest return (permutationThree):', (permutationThreeReturn - permutationThreeTradeVolume), 'BTC profit');
+      console.log(permutationThreeReturnRate, 'is the highest return (permutationThree):', permutationThreeReturn, 'BTC profit');
 
       console.log('Buying', permutationThreeFirstTradeAmount, 'ETH/BTC from', SECONDARY_MARKET['id'], 'at', secondaryETHAsk);
       console.log('Buying', permutationThreeSecondTradeAmount, 'LTC/ETH from', TERTIARY_MARKET['id'], 'at', tertiaryLTCAsk);
@@ -552,10 +543,10 @@ export const Nash = async () => {
 
       // PERMUTATION FOUR
       // Primary has BTC (buy LTC with BTC), Tertiary has LTC (sell LTC for ETH), Secondary has ETH (sell ETH for BTC)
-    } else if ((permutationFourOpportunity && permutationFourTradeVolume > MINIMUM_BTC_TRADE_VOLUME) && highestReturn === permutationFourReturn) {
+    } else if (permutationFourTradeVolume > MINIMUM_BTC_TRADE_VOLUME && highestReturn === permutationFourReturn) {
 
       console.log('*** TRINITY ***');
-      console.log(permutationFourReturnRate, 'is the highest return (permutationFour):', (permutationFourReturn - permutationFourTradeVolume), 'BTC profit');
+      console.log(permutationFourReturnRate, 'is the highest return (permutationFour):', permutationFourReturn, 'BTC profit');
 
       console.log('Buying', permutationFourFirstTradeAmount, 'LTC/BTC from', PRIMARY_MARKET['id'], 'at', primaryLTCAsk);
       console.log('Selling', permutationFourSecondTradeAmount, 'LTC/ETH from', TERTIARY_MARKET['id'], 'at', tertiaryLTCBid);
@@ -609,10 +600,10 @@ export const Nash = async () => {
 
       // PERMUTATION FIVE
       // Primary has BTC (buy ETH with BTC), Tertiary has ETH (buy LTC with ETH), Primary has LTC (sell LTC for BTC)
-    } else if ((permutationFiveOpportunity && permutationFiveTradeVolume > MINIMUM_BTC_TRADE_VOLUME) && highestReturn === permutationFiveReturn) {
+    } else if (permutationFiveTradeVolume > MINIMUM_BTC_TRADE_VOLUME && highestReturn === permutationFiveReturn) {
 
       console.log('*** TRINITY ***');
-      console.log(permutationFiveReturnRate, 'is the highest return (permutationFive):', (permutationFiveReturn - permutationFiveTradeVolume), 'BTC profit');
+      console.log(permutationFiveReturnRate, 'is the highest return (permutationFive):', permutationFiveReturn, 'BTC profit');
 
       console.log('Buying', permutationFiveFirstTradeAmount, 'ETH/BTC from', PRIMARY_MARKET['id'], 'at', primaryETHAsk);
       console.log('Buying', permutationFiveSecondTradeAmount, 'LTC/ETH from', TERTIARY_MARKET['id'], 'at', tertiaryLTCAsk);
@@ -666,10 +657,10 @@ export const Nash = async () => {
 
       // PERMUTATION SIX
       // Primary has BTC (buy LTC with BTC), Tertiary has LTC (sell LTC for ETH), Primary has ETH (sell ETH for BTC)
-    } else if ((permutationSixOpportunity && permutationSixTradeVolume > MINIMUM_BTC_TRADE_VOLUME) && highestReturn === permutationSixReturn) {
+    } else if (permutationSixTradeVolume > MINIMUM_BTC_TRADE_VOLUME && highestReturn === permutationSixReturn) {
 
       console.log('*** TRINITY ***');
-      console.log(permutationSixReturnRate, 'is the highest return (permutationSix):', (permutationSixReturn - permutationSixTradeVolume), 'BTC profit');
+      console.log(permutationSixReturnRate, 'is the highest return (permutationSix):', permutationSixReturn, 'BTC profit');
 
       console.log('Buying', permutationSixFirstTradeAmount, 'LTC/BTC from', PRIMARY_MARKET['id'], 'at', primaryLTCAsk);
       console.log('Selling', permutationSixSecondTradeAmount, 'LTC/ETH from', TERTIARY_MARKET['id'], 'at', tertiaryLTCBid);
