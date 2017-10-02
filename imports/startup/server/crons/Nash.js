@@ -25,8 +25,10 @@ TERTIARY_MARKET.loadMarkets();
 
 export const Nash = async () => {
 
+
   // <------------------------------------------------------------------------->
   // PART 1: Load up everything that's needed using a promise that throws a timeout if any part takes longer than "n" seconds
+
   const TIMEOUT = 5000;
 
   const getPrimaryBalance = new Promise( (resolve, reject) => {
@@ -122,9 +124,8 @@ export const Nash = async () => {
 
 
   // Get the markets' order books' details
-  // Do not consider any trades where the volumes are too low. Skip them and look at the next highest
-  const MINIMUM_LTC_VOLUME = 1;
-  const MINIMUM_ETH_VOLUME = .15;
+  const MINIMUM_LTC_VOLUME = .9;
+  const MINIMUM_ETH_VOLUME = .14;
   const primaryLTCOrderBook = await getPrimaryLTCOrderBook;
   let primaryLTCBid = 0;
   let primaryLTCBidVolume = 0;
@@ -151,61 +152,64 @@ export const Nash = async () => {
   let tertiaryLTCAsk = 0;
   let tertiaryLTCAskVolume = 0;
 
+
+  // Do not consider any trades where the volumes are too low. Skip them and look at the next highest (out of the top 5)
   const getBestOrderVolume = () => {
     for (i = 4; i >= 0; i--) {
-      if (primaryLTCOrderBook["bids"][i][1] > MINIMUM_LTC_VOLUME) {
-        primaryLTCBid = primaryLTCOrderBook["bids"][i][0];
-        primaryLTCBidVolume = primaryLTCOrderBook["bids"][i][1];
+      if (primaryLTCOrderBook['bids'][i][1] > MINIMUM_LTC_VOLUME) {
+        primaryLTCBid = primaryLTCOrderBook['bids'][i][0];
+        primaryLTCBidVolume = primaryLTCOrderBook['bids'][i][1];
       }
 
-      if (primaryLTCOrderBook["asks"][i][1] > MINIMUM_LTC_VOLUME) {
-        primaryLTCAsk = primaryLTCOrderBook["asks"][i][0];
-        primaryLTCAskVolume = primaryLTCOrderBook["asks"][i][1];
+      if (primaryLTCOrderBook['asks'][i][1] > MINIMUM_LTC_VOLUME) {
+        primaryLTCAsk = primaryLTCOrderBook['asks'][i][0];
+        primaryLTCAskVolume = primaryLTCOrderBook['asks'][i][1];
       }
 
-      if (primaryETHOrderBook["bids"][i][1] > MINIMUM_ETH_VOLUME) {
-        primaryETHBid = primaryETHOrderBook["bids"][i][0];
-        primaryETHBidVolume = primaryETHOrderBook["bids"][i][1];
+      if (primaryETHOrderBook['bids'][i][1] > MINIMUM_ETH_VOLUME) {
+        primaryETHBid = primaryETHOrderBook['bids'][i][0];
+        primaryETHBidVolume = primaryETHOrderBook['bids'][i][1];
       }
 
-      if (primaryETHOrderBook["asks"][i][1] > MINIMUM_ETH_VOLUME) {
-        primaryETHAsk = primaryETHOrderBook["asks"][i][0];
-        primaryETHAskVolume = primaryETHOrderBook["asks"][i][1];
+      if (primaryETHOrderBook['asks'][i][1] > MINIMUM_ETH_VOLUME) {
+        primaryETHAsk = primaryETHOrderBook['asks'][i][0];
+        primaryETHAskVolume = primaryETHOrderBook['asks'][i][1];
       }
 
-      if (secondaryLTCOrderBook["bids"][i][1] > MINIMUM_LTC_VOLUME) {
-        secondaryLTCBid = secondaryLTCOrderBook["bids"][i][0];
-        secondaryLTCBidVolume = secondaryLTCOrderBook["bids"][i][1];
+      if (secondaryLTCOrderBook['bids'][i][1] > MINIMUM_LTC_VOLUME) {
+        secondaryLTCBid = secondaryLTCOrderBook['bids'][i][0];
+        secondaryLTCBidVolume = secondaryLTCOrderBook['bids'][i][1];
       }
 
-      if (secondaryLTCOrderBook["asks"][i][1] > MINIMUM_LTC_VOLUME) {
-        secondaryLTCAsk = secondaryLTCOrderBook["asks"][i][0];
-        secondaryLTCAskVolume = secondaryLTCOrderBook["asks"][i][1];
+      if (secondaryLTCOrderBook['asks'][i][1] > MINIMUM_LTC_VOLUME) {
+        secondaryLTCAsk = secondaryLTCOrderBook['asks'][i][0];
+        secondaryLTCAskVolume = secondaryLTCOrderBook['asks'][i][1];
       }
 
-      if (secondaryETHOrderBook["bids"][i][1] > MINIMUM_ETH_VOLUME) {
-        secondaryETHBid = secondaryETHOrderBook["bids"][i][0];
-        secondaryETHBidVolume = secondaryETHOrderBook["bids"][i][1];
+      if (secondaryETHOrderBook['bids'][i][1] > MINIMUM_ETH_VOLUME) {
+        secondaryETHBid = secondaryETHOrderBook['bids'][i][0];
+        secondaryETHBidVolume = secondaryETHOrderBook['bids'][i][1];
       }
 
-      if (secondaryETHOrderBook["asks"][i][1] > MINIMUM_ETH_VOLUME) {
-        secondaryETHAsk = secondaryETHOrderBook["asks"][i][0];
-        secondaryETHAskVolume = secondaryETHOrderBook["asks"][i][1];
+      if (secondaryETHOrderBook['asks'][i][1] > MINIMUM_ETH_VOLUME) {
+        secondaryETHAsk = secondaryETHOrderBook['asks'][i][0];
+        secondaryETHAskVolume = secondaryETHOrderBook['asks'][i][1];
       }
 
-      if (tertiaryLTCOrderBook["bids"][i][1] > MINIMUM_LTC_VOLUME) {
-        tertiaryLTCBid = tertiaryLTCOrderBook["bids"][i][0];
-        tertiaryLTCBidVolume = tertiaryLTCOrderBook["bids"][i][1];
+      if (tertiaryLTCOrderBook['bids'][i][1] > MINIMUM_LTC_VOLUME) {
+        tertiaryLTCBid = tertiaryLTCOrderBook['bids'][i][0];
+        tertiaryLTCBidVolume = tertiaryLTCOrderBook['bids'][i][1];
       }
 
-      if (tertiaryLTCOrderBook["asks"][i][1] > MINIMUM_LTC_VOLUME) {
-        tertiaryLTCAsk = tertiaryLTCOrderBook["asks"][i][0];
-        tertiaryLTCAskVolume = tertiaryLTCOrderBook["asks"][i][1];
+      if (tertiaryLTCOrderBook['asks'][i][1] > MINIMUM_LTC_VOLUME) {
+        tertiaryLTCAsk = tertiaryLTCOrderBook['asks'][i][0];
+        tertiaryLTCAskVolume = tertiaryLTCOrderBook['asks'][i][1];
       }
     };
   };
 
   await getBestOrderVolume();
+
 
   // <------------------------------------------------------------------------->
   // PART 2: Identify if any permutation has an arbitrage opportunity
@@ -348,25 +352,28 @@ export const Nash = async () => {
   console.log('permutationSixThirdTradeBTCValue:', permutationSixThirdTradeBTCValue);
   console.log('permutationSixThirdTradeVolume (ETH):', (primaryETHBalance * (1 - PRIMARY_FEE)), 'vs', primaryETHBidVolume);
   console.log('==========');
-
-  console.log('==========');
-  console.log('TRADE PROFIT RATES');
-  console.log('ONE:  ', permutationOneReturn, 'profit (BTC) |', permutationOneReturnRate, '*', permutationOneTradeVolume);
-  console.log('TWO:  ', permutationTwoReturn, 'profit (BTC) |', permutationTwoReturnRate, '*', permutationTwoTradeVolume);
-  console.log('THREE:', permutationThreeReturn, 'profit (BTC) |', permutationThreeReturnRate, '*', permutationThreeTradeVolume);
-  console.log('FOUR: ', permutationFourReturn, 'profit (BTC) |', permutationFourReturnRate, '*', permutationFourTradeVolume);
-  console.log('FIVE: ', permutationFiveReturn, 'profit (BTC) |', permutationFiveReturnRate, '*', permutationFiveTradeVolume);
-  console.log('SIX:  ', permutationSixReturn, 'profit (BTC) |', permutationSixReturnRate, '*', permutationSixTradeVolume);
-  console.log('==========');
   */
 
   // <------------------------------------------------------------------------->
-  // PART 3: Execution sequence. First try to execute Trinity, then NashLTC, then NashETH
+  // PART 3: Execution sequence. First try to execute Trinity, then NashLTC, then NashETH (Geppetto comes afterwards in part 4)
 
   // ~~~ TRINITY ~~~
   // PART 3.1: Identify which Trinity permutation has the highest return (taking volume into account) and execute those trades
   const highestReturn = Math.max(permutationOneReturn, permutationTwoReturn, permutationThreeReturn, permutationFourReturn, permutationFiveReturn, permutationSixReturn);
-  const MINIMUM_BTC_TRADE_VOLUME = .001; // Because we don't want to trade .001 LTC (in equivalent BTC volume) for example
+  const highestReturnRate = Math.max(permutationOneReturnRate, permutationTwoReturnRate, permutationThreeReturnRate, permutationFourReturnRate, permutationFiveReturnRate, permutationSixReturnRate);
+  const MINIMUM_BTC_TRADE_VOLUME = .0015; // Because we don't want to trade tiny LTC amounts, for example
+
+  if (highestReturnRate > MINIMUM_RETURN_RATE) {
+    console.log('==========');
+    console.log('TRADE PROFIT RATES');
+    console.log('ONE:  ', permutationOneReturn, 'profit (BTC) |', permutationOneReturnRate, '*', permutationOneTradeVolume);
+    console.log('TWO:  ', permutationTwoReturn, 'profit (BTC) |', permutationTwoReturnRate, '*', permutationTwoTradeVolume);
+    console.log('THREE:', permutationThreeReturn, 'profit (BTC) |', permutationThreeReturnRate, '*', permutationThreeTradeVolume);
+    console.log('FOUR: ', permutationFourReturn, 'profit (BTC) |', permutationFourReturnRate, '*', permutationFourTradeVolume);
+    console.log('FIVE: ', permutationFiveReturn, 'profit (BTC) |', permutationFiveReturnRate, '*', permutationFiveTradeVolume);
+    console.log('SIX:  ', permutationSixReturn, 'profit (BTC) |', permutationSixReturnRate, '*', permutationSixTradeVolume);
+    console.log('==========');
+  }
 
   if (highestReturn > 0) {
 
@@ -387,7 +394,7 @@ export const Nash = async () => {
       });
 
       primaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: primaryBuyOrder');
+        // console.log('Everything worked fine: primaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
@@ -402,7 +409,7 @@ export const Nash = async () => {
       });
 
       tertiaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: tertiaryBuyOrder');
+        // console.log('Everything worked fine: tertiaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiaryBuyOrder, retrying... ***');
@@ -417,7 +424,7 @@ export const Nash = async () => {
       });
 
       secondarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: secondarySellOrder');
+        // console.log('Everything worked fine: secondarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondarySellOrder, retrying... ***');
@@ -444,7 +451,7 @@ export const Nash = async () => {
       });
 
       secondaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: secondaryBuyOrder');
+        // console.log('Everything worked fine: secondaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondaryBuyOrder, retrying... ***');
@@ -459,7 +466,7 @@ export const Nash = async () => {
       });
 
       tertiarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: tertiarySellOrder');
+        // console.log('Everything worked fine: tertiarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiarySellOrder, retrying... ***');
@@ -474,7 +481,7 @@ export const Nash = async () => {
       });
 
       primarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: primarySellOrder');
+        // console.log('Everything worked fine: primarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
@@ -501,7 +508,7 @@ export const Nash = async () => {
       });
 
       secondaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: secondaryBuyOrder');
+        // console.log('Everything worked fine: secondaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondaryBuyOrder, retrying... ***');
@@ -516,7 +523,7 @@ export const Nash = async () => {
       });
 
       tertiaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: tertiaryBuyOrder');
+        // console.log('Everything worked fine: tertiaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiaryBuyOrder, retrying... ***');
@@ -531,7 +538,7 @@ export const Nash = async () => {
       });
 
       primarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: primarySellOrder');
+        // console.log('Everything worked fine: primarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
@@ -558,7 +565,7 @@ export const Nash = async () => {
       });
 
       primaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: primaryBuyOrder');
+        // console.log('Everything worked fine: primaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
@@ -573,7 +580,7 @@ export const Nash = async () => {
       });
 
       tertiarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: tertiarySellOrder');
+        // console.log('Everything worked fine: tertiarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiarySellOrder, retrying... ***');
@@ -588,7 +595,7 @@ export const Nash = async () => {
       });
 
       secondarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: secondarySellOrder');
+        // console.log('Everything worked fine: secondarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondarySellOrder, retrying... ***');
@@ -615,7 +622,7 @@ export const Nash = async () => {
       });
 
       primaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: primaryBuyOrder');
+        // console.log('Everything worked fine: primaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
@@ -630,7 +637,7 @@ export const Nash = async () => {
       });
 
       tertiaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: tertiaryBuyOrder');
+        // console.log('Everything worked fine: tertiaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiaryBuyOrder, retrying... ***');
@@ -645,7 +652,7 @@ export const Nash = async () => {
       });
 
       primarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: primarySellOrder');
+        // console.log('Everything worked fine: primarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
@@ -672,7 +679,7 @@ export const Nash = async () => {
       });
 
       primaryBuyOrder.then( (resolution) => {
-        console.log('Everything worked fine: primaryBuyOrder');
+        // console.log('Everything worked fine: primaryBuyOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
@@ -687,7 +694,7 @@ export const Nash = async () => {
       });
 
       tertiarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: tertiarySellOrder');
+        // console.log('Everything worked fine: tertiarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiarySellOrder, retrying... ***');
@@ -702,7 +709,7 @@ export const Nash = async () => {
       });
 
       primarySellOrder.then( (resolution) => {
-        console.log('Everything worked fine: primarySellOrder');
+        // console.log('Everything worked fine: primarySellOrder');
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
@@ -718,6 +725,7 @@ export const Nash = async () => {
   } else {
 
     // ~~~ NASH ~~~
+
     const NASH_LTC_MINIMUM_TRADABLE_VOLUME = .1; // Can't place an order smaller than "n" LTC
     const NASH_ETH_MINIMUM_TRADABLE_VOLUME = .01; // Can't place an order smaller than "n" ETH
 
@@ -768,12 +776,12 @@ export const Nash = async () => {
       console.log('Buying', secondaryLTCOpportunityTradableVolume, 'LTC low from', PRIMARY_MARKET['id'], 'at', primaryLTCAsk);
 
       const secondarySellOrder = new Promise( (resolve, reject) => {
-        setTimeout(reject, TIMEOUT, 'primarySellOrder');
+        setTimeout(reject, TIMEOUT, 'secondarySellOrder');
         resolve(SECONDARY_MARKET.createLimitSellOrder('LTC/BTC', secondaryLTCOpportunityTradableVolume, secondaryLTCBid));
       });
 
       const primaryBuyOrder = new Promise( (resolve, reject) => {
-        setTimeout(reject, TIMEOUT, 'secondaryBuyOrder');
+        setTimeout(reject, TIMEOUT, 'primaryBuyOrder');
         resolve(PRIMARY_MARKET.createLimitBuyOrder('LTC/BTC', secondaryLTCOpportunityTradableVolume, primaryLTCAsk));
       });
 
@@ -844,12 +852,12 @@ export const Nash = async () => {
       console.log('Buying', secondaryETHOpportunityTradableVolume, 'ETH low from', PRIMARY_MARKET['id'], 'at', primaryETHAsk);
 
       const secondarySellOrder = new Promise( (resolve, reject) => {
-        setTimeout(reject, TIMEOUT, 'primarySellOrder');
+        setTimeout(reject, TIMEOUT, 'secondarySellOrder');
         resolve(SECONDARY_MARKET.createLimitSellOrder('ETH/BTC', secondaryETHOpportunityTradableVolume, secondaryETHBid));
       });
 
       const primaryBuyOrder = new Promise( (resolve, reject) => {
-        setTimeout(reject, TIMEOUT, 'secondaryBuyOrder');
+        setTimeout(reject, TIMEOUT, 'primaryBuyOrder');
         resolve(PRIMARY_MARKET.createLimitBuyOrder('ETH/BTC', secondaryETHOpportunityTradableVolume, primaryETHAsk));
       });
 
@@ -873,7 +881,126 @@ export const Nash = async () => {
         });
       });
 
-
     }
   }
+
+
+  // <------------------------------------------------------------------------->
+  // PART 4: Run Geppetto, the market maker bot
+  // WHEN THIS IS COMPLETED, MOVE IT TO PART 2 SO THAT ITS MORE LIKELY TO CHECK AND PLACE ORDERS BEFORE NASH AND TRINITY
+
+  // ~~~ GEPPETTO ~~~
+
+  /*
+  // Look up any outstanding orders
+  const getPrimaryLTCOrders = new Promise( (resolve, reject) => {
+    setTimeout(reject, TIMEOUT, 'getPrimaryLTCOrders');
+    resolve(PRIMARY_MARKET.fetchOrders('LTC/BTC'));
+  });
+
+  getPrimaryLTCOrders.then( (resolution) => {
+    // console.log('Everything worked fine: getPrimaryLTCOrders');
+  }, (rejection) => {
+    console.log('*** TIMED OUT: getPrimaryLTCOrders ***');
+  });
+
+  const LTC_MAKER_SPREAD = .00001; // "n" LTC points. WILL NEED ADJUSTING AS LTC VALUES GO UP!
+  const makerLTCHighAsk = primaryLTCAsk + LTC_MAKER_SPREAD;
+  const makerLTCLowBid = primaryLTCBid - LTC_MAKER_SPREAD;
+  const primaryLTCOrders = await getPrimaryLTCOrders[0];
+  let outstandingLTCSellOrders = [];
+  let outstandingLTCBuyOrders = [];
+
+  // If any order is not where it should be according to the maintainance calculation, cancel it...
+  primaryLTCOrders.forEach( (order) => {
+    if (order['symbol'] === 'LTC/BTC' && order['status'] !== 'closed') {
+
+      // Cancel the sell order
+      if (order['side'] === 'sell' && order['price'] > makerLTCHighAsk) {
+
+        const cancelSellOrder = new Promise( (resolve, reject) => {
+          setTimeout(reject, TIMEOUT, 'cancelSellOrder');
+          resolve(PRIMARY_MARKET.cancelOrder(order['id']));
+        });
+
+        cancelSellOrder.then( (resolution) => {
+          // console.log('Everything worked fine: cancelSellOrder');
+        }, (rejection) => {
+          console.log(rejection);
+          console.log('*** TIMED OUT: cancelSellOrder, retrying... ***');
+          cancelSellOrder.then( () => {
+            console.log('Retry attempted');
+          });
+        });
+
+        // Cancel the buy order
+      } else if (order['side'] === 'buy' && order['price'] < makerLTCLowBid) {
+
+        const cancelBuyOrder = new Promise( (resolve, reject) => {
+          setTimeout(reject, TIMEOUT, 'cancelBuyOrder');
+          resolve(PRIMARY_MARKET.cancelOrder(order['id']));
+        });
+
+        cancelBuyOrder.then( (resolution) => {
+          // console.log('Everything worked fine: cancelBuyOrder');
+        }, (rejection) => {
+          console.log(rejection);
+          console.log('*** TIMED OUT: cancelBuyOrder, retrying... ***');
+          cancelBuyOrder.then( () => {
+            console.log('Retry attempted');
+          });
+        });
+
+      }
+
+      // ...but if the order is still relevant, push it to the appropriate array.
+    } else if (order['side'] === 'sell' && order['price'] <= makerLTCHighAsk) {
+      outstandingLTCSellOrders.push(order);
+    } else if (order['side'] === 'buy' && order['price'] >= makerLTCLowBid) {
+      outstandingLTCBuyOrders.push(order);
+    } else {
+      console.log('GEPPETTO: Rouge order detected');
+      console.log(order);
+    }
+  });
+
+  // If there are fewer than 1 outstanding orders on each side, place both a buy order and a sell order
+  if (outstandingLTCSellOrders.length < 1 || outstandingLTCBuyOrders.length < 1) {
+
+    const GEPPETTO_LTC_VOLUME = 1; // "n" LTC
+    console.log('GEPPETTO: Placing orders...');
+
+    const primarySellOrder = new Promise( (resolve, reject) => {
+      setTimeout(reject, TIMEOUT, 'primarySellOrder');
+      resolve(PRIMARY_MARKET.createLimitSellOrder('LTC/BTC', GEPPETTO_LTC_VOLUME, makerLTCHighAsk));
+    });
+
+    const primaryBuyOrder = new Promise( (resolve, reject) => {
+      setTimeout(reject, TIMEOUT, 'primaryBuyOrder');
+      resolve(PRIMARY_MARKET.createLimitBuyOrder('LTC/BTC', GEPPETTO_LTC_VOLUME, makerLTCLowBid));
+    });
+
+    primarySellOrder.then( (resolution) => {
+      // console.log('Everything worked fine: primarySellOrder');
+    }, (rejection) => {
+      console.log(rejection);
+      console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
+      primarySellOrder.then( () => {
+        console.log('Retry attempted');
+      });
+    });
+
+    primaryBuyOrder.then( (resolution) => {
+      // console.log('Everything worked fine: primaryBuyOrder');
+    }, (rejection) => {
+      console.log(rejection);
+      console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
+      primaryBuyOrder.then( () => {
+        console.log('Retry attempted');
+      });
+    });
+
+  }
+  */
+
 };
