@@ -127,30 +127,30 @@ export const Nash = async () => {
   const MINIMUM_LTC_VOLUME = .9;
   const MINIMUM_ETH_VOLUME = .14;
   const primaryLTCOrderBook = await getPrimaryLTCOrderBook;
-  let primaryLTCBid = 0;
-  let primaryLTCBidVolume = 0;
-  let primaryLTCAsk = 0;
-  let primaryLTCAskVolume = 0;
+  let primaryLTCBid;
+  let primaryLTCBidVolume;
+  let primaryLTCAsk;
+  let primaryLTCAskVolume;
   const primaryETHOrderBook = await getPrimaryETHOrderBook;
-  let primaryETHBid = 0;
-  let primaryETHBidVolume = 0;
-  let primaryETHAsk = 0;
-  let primaryETHAskVolume = 0;
+  let primaryETHBid;
+  let primaryETHBidVolume;
+  let primaryETHAsk;
+  let primaryETHAskVolume;
   const secondaryLTCOrderBook = await getSecondaryLTCOrderBook;
-  let secondaryLTCBid = 0;
-  let secondaryLTCBidVolume = 0;
-  let secondaryLTCAsk = 0;
-  let secondaryLTCAskVolume = 0;
+  let secondaryLTCBid;
+  let secondaryLTCBidVolume;
+  let secondaryLTCAsk;
+  let secondaryLTCAskVolume;
   const secondaryETHOrderBook = await getSecondaryETHOrderBook;
-  let secondaryETHBid = 0;
-  let secondaryETHBidVolume = 0;
-  let secondaryETHAsk = 0;
-  let secondaryETHAskVolume = 0;
+  let secondaryETHBid;
+  let secondaryETHBidVolume;
+  let secondaryETHAsk;
+  let secondaryETHAskVolume;
   const tertiaryLTCOrderBook = await getTertiaryLTCOrderBook;
-  let tertiaryLTCBid = 0;
-  let tertiaryLTCBidVolume = 0;
-  let tertiaryLTCAsk = 0;
-  let tertiaryLTCAskVolume = 0;
+  let tertiaryLTCBid;
+  let tertiaryLTCBidVolume;
+  let tertiaryLTCAsk;
+  let tertiaryLTCAskVolume;
 
 
   // Do not consider any trades where the volumes are too low. Skip them and look at the next highest (out of the top 5)
@@ -210,6 +210,11 @@ export const Nash = async () => {
 
   await getBestOrderVolume();
 
+  const primaryLTCBTCBalance = primaryBTCBalance + (primaryLTCBalance * primaryLTCAsk);
+  const primaryETHBTCBalance = primaryBTCBalance + (primaryETHBalance * primaryETHAsk);
+  const secondaryLTCBTCBalance = secondaryBTCBalance + (secondaryLTCBalance * secondaryLTCAsk);
+  const secondaryETHBTCBalance = secondaryBTCBalance + (secondaryETHBalance * secondaryETHAsk);
+
 
   // <------------------------------------------------------------------------->
   // PART 2: Identify if any permutation has an arbitrage opportunity
@@ -222,34 +227,46 @@ export const Nash = async () => {
 
 
   // ~~~ NASH ~~~
+  // "If this pair of currencies have uneven balances, the difference is the eligible trade volume"
 
   // LTC trades can only be in "0.1" increments, while ETH and BTC trades can only be in "0.001" increments
   const LTC_DECIMAL_POINTS = 1; // "n" decimal points
   const GENERAL_DECIMAL_POINTS = 3; // "n" decimal points
   const NASH_MINIMUM_DELTA = .0031 // ("n"*100)% delta needs to be present between the two prices or else taker fees eat up my profits
-  const NASH_TRADABLE_PERCENTAGE = .8; // ("n"*100)% of the tradable volume will be traded, to mitigate risk
 
   // LTC/BTC
   const primaryLTCOpportunity = primaryLTCBid > (secondaryLTCAsk * (1 + NASH_MINIMUM_DELTA));
-  const secondaryLTCOpportunity = secondaryLTCBid > (primaryLTCAsk * (1 + NASH_MINIMUM_DELTA));;
-  const primaryLTCOpportunityVolume = Math.min(primaryLTCBidVolume, secondaryLTCAskVolume) * NASH_TRADABLE_PERCENTAGE;
-  const primaryLTCOpportunityTradableVolume = Math.min(primaryLTCOpportunityVolume, (primaryLTCBalance * (1 - PRIMARY_FEE)), (secondaryBTCBalance * (1 - SECONDARY_FEE) / secondaryLTCAsk)).toFixed(LTC_DECIMAL_POINTS);
-  const secondaryLTCOpportunityVolume = Math.min(secondaryLTCBidVolume, primaryLTCAskVolume) * NASH_TRADABLE_PERCENTAGE;
-  const secondaryLTCOpportunityTradableVolume = Math.min(secondaryLTCOpportunityVolume, (secondaryLTCBalance * (1 - SECONDARY_FEE)), (primaryBTCBalance * (1 - PRIMARY_FEE) / primaryLTCAsk)).toFixed(LTC_DECIMAL_POINTS);
+  const secondaryLTCOpportunity = secondaryLTCBid > (primaryLTCAsk * (1 + NASH_MINIMUM_DELTA));
+  const primarySpendableLTC = (primaryLTCBalance - primaryLTCBTCBalance / primaryLTCAsk / 2) > 0 ? (primaryLTCBalance - primaryLTCBTCBalance / primaryLTCAsk / 2 * (1 - PRIMARY_FEE)) : 0;
+  const secondarySpendableLTCBTC = (secondaryBTCBalance - secondaryLTCBTCBalance / 2) > 0 ? (secondaryBTCBalance - secondaryLTCBTCBalance / 2 * (1 - SECONDARY_FEE)) : 0;
+  const secondarySpendableLTC = (secondaryLTCBalance - secondaryLTCBTCBalance / secondaryLTCAsk / 2) > 0 ? (secondaryLTCBalance - secondaryLTCBTCBalance / secondaryLTCAsk / 2 * (1 - SECONDARY_FEE)) : 0;
+  const primarySpendableLTCBTC = (primaryBTCBalance - primaryLTCBTCBalance / 2) > 0 ? (primaryBTCBalance - primaryLTCBTCBalance / 2 * (1 - PRIMARY_FEE)) : 0;
+  const primaryLTCOpportunityVolume = Math.min(primaryLTCBidVolume, secondaryLTCAskVolume, primarySpendableLTC.toFixed(LTC_DECIMAL_POINTS), (secondarySpendableLTCBTC / secondaryLTCAsk).toFixed(LTC_DECIMAL_POINTS));
+  const secondaryLTCOpportunityVolume = Math.min(secondaryLTCBidVolume, primaryLTCAskVolume, secondarySpendableLTC.toFixed(LTC_DECIMAL_POINTS), (primarySpendableLTCBTC / primaryLTCAsk).toFixed(LTC_DECIMAL_POINTS));
 
   // ETH/BTC
   const primaryETHOpportunity = primaryETHBid > (secondaryETHAsk * (1 + NASH_MINIMUM_DELTA));
-  const secondaryETHOpportunity = secondaryETHBid > (primaryETHAsk * (1 + NASH_MINIMUM_DELTA));;
-  const primaryETHOpportunityVolume = Math.min(primaryETHBidVolume, secondaryETHAskVolume) * NASH_TRADABLE_PERCENTAGE;
-  const primaryETHOpportunityTradableVolume = Math.min(primaryETHOpportunityVolume, (primaryETHBalance * (1 - PRIMARY_FEE)), (secondaryBTCBalance * (1 - SECONDARY_FEE) / secondaryETHAsk)).toFixed(GENERAL_DECIMAL_POINTS);
-  const secondaryETHOpportunityVolume = Math.min(secondaryETHBidVolume, primaryETHAskVolume) * NASH_TRADABLE_PERCENTAGE;
-  const secondaryETHOpportunityTradableVolume = Math.min(secondaryETHOpportunityVolume, (secondaryETHBalance * (1 - SECONDARY_FEE)), (primaryBTCBalance * (1 - PRIMARY_FEE) / primaryETHAsk)).toFixed(GENERAL_DECIMAL_POINTS);
+  const secondaryETHOpportunity = secondaryETHBid > (primaryETHAsk * (1 + NASH_MINIMUM_DELTA));
+  const primarySpendableETH = (primaryETHBalance - primaryETHBTCBalance / primaryETHAsk / 2) > 0 ? (primaryETHBalance - primaryETHBTCBalance / primaryETHAsk / 2) * (1 - PRIMARY_FEE) : 0;
+  const secondarySpendableETHBTC = (secondaryBTCBalance - secondaryETHBTCBalance / 2) > 0 ? (secondaryBTCBalance - secondaryETHBTCBalance / 2) * (1 - SECONDARY_FEE) : 0;
+  const secondarySpendableETH = (secondaryETHBalance - secondaryETHBTCBalance / secondaryETHAsk / 2) > 0 ? (secondaryETHBalance - secondaryETHBTCBalance / secondaryETHAsk / 2) * (1 - SECONDARY_FEE) : 0;
+  const primarySpendableETHBTC = (primaryBTCBalance - primaryETHBTCBalance / 2) > 0 ? (primaryBTCBalance - primaryETHBTCBalance / 2) * (1 - PRIMARY_FEE) : 0;
+  const primaryETHOpportunityVolume = Math.min(primaryETHBidVolume, secondaryETHAskVolume, primarySpendableETH.toFixed(GENERAL_DECIMAL_POINTS), (secondarySpendableETHBTC / secondaryETHAsk).toFixed(GENERAL_DECIMAL_POINTS));
+  const secondaryETHOpportunityVolume = Math.min(secondaryETHBidVolume, primaryETHAskVolume, secondarySpendableETH.toFixed(GENERAL_DECIMAL_POINTS), (primarySpendableETHBTC / primaryETHAsk).toFixed(GENERAL_DECIMAL_POINTS));
 
+  /*
+  console.log('===');
+  console.log('primarySpendableETH:', primaryETHBalance, '-', primaryETHBTCBalance, '/ 2 /', primaryETHAsk);
+  console.log('secondarySpendableETHBTC:', secondaryBTCBalance, '-', secondaryETHBTCBalance, '/ 2');
+  console.log('secondarySpendableETH:', secondaryETHBalance, '-', secondaryETHBTCBalance, '/ 2 /', secondaryETHAsk);
+  console.log('primarySpendableETHBTC:', primaryBTCBalance, '-', primaryETHBTCBalance, '/ 2');
+  console.log('===');
+  */
 
   // ~~~ TRINITY ~~~
   // (Volume checks are always in BTC equivalent, converted backwards)
 
-  const MINIMUM_RETURN_RATE = .0001; // .01% return
+  const MINIMUM_RETURN_RATE = .0005; // .05% return
 
   // PERMUTATION ONE
   // Primary has BTC (buy ETH with BTC), Tertiary has ETH (buy LTC with ETH), Secondary has LTC (sell LTC for BTC)
@@ -734,12 +751,12 @@ export const Nash = async () => {
     if (primaryLTCOpportunity && primaryLTCOpportunityVolume > NASH_LTC_MINIMUM_TRADABLE_VOLUME) {
 
       console.log('*** NASH ***');
-      console.log('Selling', primaryLTCOpportunityTradableVolume, 'LTC high from', PRIMARY_MARKET['id'], 'at', primaryLTCBid);
-      console.log('Buying', primaryLTCOpportunityTradableVolume, 'LTC low from', SECONDARY_MARKET['id'], 'at', secondaryLTCAsk);
+      console.log('Selling', primaryLTCOpportunityVolume, 'LTC high from', PRIMARY_MARKET['id'], 'at', primaryLTCBid);
+      console.log('Buying', primaryLTCOpportunityVolume, 'LTC low from', SECONDARY_MARKET['id'], 'at', secondaryLTCAsk);
 
       const primarySellOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'primarySellOrder');
-        resolve(PRIMARY_MARKET.createLimitSellOrder('LTC/BTC', primaryLTCOpportunityTradableVolume, primaryLTCBid));
+        resolve(PRIMARY_MARKET.createLimitSellOrder('LTC/BTC', primaryLTCOpportunityVolume, primaryLTCBid));
       });
 
       primarySellOrder.then( (resolution) => {
@@ -754,7 +771,7 @@ export const Nash = async () => {
 
       const secondaryBuyOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'secondaryBuyOrder');
-        resolve(SECONDARY_MARKET.createLimitBuyOrder('LTC/BTC', primaryLTCOpportunityTradableVolume, secondaryLTCAsk));
+        resolve(SECONDARY_MARKET.createLimitBuyOrder('LTC/BTC', primaryLTCOpportunityVolume, secondaryLTCAsk));
       });
 
       secondaryBuyOrder.then( (resolution) => {
@@ -769,20 +786,20 @@ export const Nash = async () => {
 
     // PART 3.2.1b
     // If there's an LTC/BTC opportunity for arbitrage in the SECONDARY_MARKET, and the opportunity's volume is above the minimum tradable volume, make the trades
-  } else if (secondaryLTCOpportunity && secondaryLTCOpportunityTradableVolume > NASH_LTC_MINIMUM_TRADABLE_VOLUME) {
+  } else if (secondaryLTCOpportunity && secondaryLTCOpportunityVolume > NASH_LTC_MINIMUM_TRADABLE_VOLUME) {
 
       console.log('*** NASH ***');
-      console.log('Selling', secondaryLTCOpportunityTradableVolume, 'LTC high from', SECONDARY_MARKET['id'], 'at', secondaryLTCBid);
-      console.log('Buying', secondaryLTCOpportunityTradableVolume, 'LTC low from', PRIMARY_MARKET['id'], 'at', primaryLTCAsk);
+      console.log('Selling', secondaryLTCOpportunityVolume, 'LTC high from', SECONDARY_MARKET['id'], 'at', secondaryLTCBid);
+      console.log('Buying', secondaryLTCOpportunityVolume, 'LTC low from', PRIMARY_MARKET['id'], 'at', primaryLTCAsk);
 
       const secondarySellOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'secondarySellOrder');
-        resolve(SECONDARY_MARKET.createLimitSellOrder('LTC/BTC', secondaryLTCOpportunityTradableVolume, secondaryLTCBid));
+        resolve(SECONDARY_MARKET.createLimitSellOrder('LTC/BTC', secondaryLTCOpportunityVolume, secondaryLTCBid));
       });
 
       const primaryBuyOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'primaryBuyOrder');
-        resolve(PRIMARY_MARKET.createLimitBuyOrder('LTC/BTC', secondaryLTCOpportunityTradableVolume, primaryLTCAsk));
+        resolve(PRIMARY_MARKET.createLimitBuyOrder('LTC/BTC', secondaryLTCOpportunityVolume, primaryLTCAsk));
       });
 
       secondarySellOrder.then( (resolution) => {
@@ -807,15 +824,15 @@ export const Nash = async () => {
 
       // PART 3.2.2a
       // If there's an ETH/BTC opportunity for arbitrage in the PRIMARY_MARKET, and the opportunity's volume is above the minimum tradable volume, make the trades
-    } else if (primaryETHOpportunity && primaryETHOpportunityTradableVolume > NASH_ETH_MINIMUM_TRADABLE_VOLUME) {
+    } else if (primaryETHOpportunity && primaryETHOpportunityVolume > NASH_ETH_MINIMUM_TRADABLE_VOLUME) {
 
       console.log('*** NASH ***');
-      console.log('Selling', primaryETHOpportunityTradableVolume, 'ETH high from', PRIMARY_MARKET['id'], 'at', primaryETHBid);
-      console.log('Buying', primaryETHOpportunityTradableVolume, 'ETH low from', SECONDARY_MARKET['id'], 'at', secondaryETHAsk);
+      console.log('Selling', primaryETHOpportunityVolume, 'ETH high from', PRIMARY_MARKET['id'], 'at', primaryETHBid);
+      console.log('Buying', primaryETHOpportunityVolume, 'ETH low from', SECONDARY_MARKET['id'], 'at', secondaryETHAsk);
 
       const primarySellOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'primarySellOrder');
-        resolve(PRIMARY_MARKET.createLimitSellOrder('ETH/BTC', primaryETHOpportunityTradableVolume, primaryETHBid));
+        resolve(PRIMARY_MARKET.createLimitSellOrder('ETH/BTC', primaryETHOpportunityVolume, primaryETHBid));
       });
 
       primarySellOrder.then( (resolution) => {
@@ -830,7 +847,7 @@ export const Nash = async () => {
 
       const secondaryBuyOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'secondaryBuyOrder');
-        resolve(SECONDARY_MARKET.createLimitBuyOrder('ETH/BTC', primaryETHOpportunityTradableVolume, secondaryETHAsk));
+        resolve(SECONDARY_MARKET.createLimitBuyOrder('ETH/BTC', primaryETHOpportunityVolume, secondaryETHAsk));
       });
 
       secondaryBuyOrder.then( (resolution) => {
@@ -845,20 +862,20 @@ export const Nash = async () => {
 
     // PART 3.2.2b
     // If there's an ETH/BTC opportunity for arbitrage in the SECONDARY_MARKET, and the opportunity's volume is above the minimum tradable volume, make the trades
-  } else if (secondaryETHOpportunity && secondaryETHOpportunityTradableVolume > NASH_ETH_MINIMUM_TRADABLE_VOLUME) {
+  } else if (secondaryETHOpportunity && secondaryETHOpportunityVolume > NASH_ETH_MINIMUM_TRADABLE_VOLUME) {
 
       console.log('*** NASH ***');
-      console.log('Selling', secondaryETHOpportunityTradableVolume, 'ETH high from', SECONDARY_MARKET['id'], 'at', secondaryETHBid);
-      console.log('Buying', secondaryETHOpportunityTradableVolume, 'ETH low from', PRIMARY_MARKET['id'], 'at', primaryETHAsk);
+      console.log('Selling', secondaryETHOpportunityVolume, 'ETH high from', SECONDARY_MARKET['id'], 'at', secondaryETHBid);
+      console.log('Buying', secondaryETHOpportunityVolume, 'ETH low from', PRIMARY_MARKET['id'], 'at', primaryETHAsk);
 
       const secondarySellOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'secondarySellOrder');
-        resolve(SECONDARY_MARKET.createLimitSellOrder('ETH/BTC', secondaryETHOpportunityTradableVolume, secondaryETHBid));
+        resolve(SECONDARY_MARKET.createLimitSellOrder('ETH/BTC', secondaryETHOpportunityVolume, secondaryETHBid));
       });
 
       const primaryBuyOrder = new Promise( (resolve, reject) => {
         setTimeout(reject, TIMEOUT, 'primaryBuyOrder');
-        resolve(PRIMARY_MARKET.createLimitBuyOrder('ETH/BTC', secondaryETHOpportunityTradableVolume, primaryETHAsk));
+        resolve(PRIMARY_MARKET.createLimitBuyOrder('ETH/BTC', secondaryETHOpportunityVolume, primaryETHAsk));
       });
 
       secondarySellOrder.then( (resolution) => {
@@ -904,9 +921,10 @@ export const Nash = async () => {
     console.log('*** TIMED OUT: getPrimaryLTCOrders ***');
   });
 
+  // Note: Geppetto doesn't care about the volumes of the current asks/bids, only their positions
   const LTC_MAKER_SPREAD = .00001; // "n" LTC points. WILL NEED ADJUSTING AS LTC VALUES GO UP!
-  const makerLTCHighAsk = primaryLTCAsk + LTC_MAKER_SPREAD;
-  const makerLTCLowBid = primaryLTCBid - LTC_MAKER_SPREAD;
+  const makerLTCHighAsk = primaryLTCOrderBook['asks'][0][0] + LTC_MAKER_SPREAD;
+  const makerLTCLowBid = primaryLTCOrderBook['bids'][0][0] - LTC_MAKER_SPREAD;
   const primaryLTCOrders = await getPrimaryLTCOrders[0];
   let outstandingLTCSellOrders = [];
   let outstandingLTCBuyOrders = [];
