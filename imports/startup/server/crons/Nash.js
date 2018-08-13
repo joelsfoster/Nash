@@ -22,7 +22,7 @@ PRIMARY_MARKET.loadMarkets();
 SECONDARY_MARKET.loadMarkets();
 TERTIARY_MARKET.loadMarkets();
 
-
+// Good God, yes I know I have to refactor all this. But my, has this been a learning experience!
 export const Nash = async () => {
 
 
