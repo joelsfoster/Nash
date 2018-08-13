@@ -8,7 +8,7 @@ SyncedCron.start();
 SyncedCron.add({
   name: "Nash",
   schedule(parser) {
-    return parser.text('every 8 seconds');
+    return parser.text('every 9 seconds');
   },
   job() {
     Nash();
