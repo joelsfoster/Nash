@@ -4,16 +4,16 @@ import moment from 'moment';
 
 // PART 0: First, load up authenticated instances of the exchanges, outside of the normal function call to limit API footprint
 const hitbtc = new ccxt.hitbtc({
-  apiKey: 'a78a604e901ef77517f7ce265f7c2bd1',
-  secret: '1bf1570027cace12a79137cf47fb2886'
+  apiKey: '00000000000000000000000000000000',
+  secret: '00000000000000000000000000000000'
 });
 const bitfinex = new ccxt.bitfinex({
-  apiKey: '3FEkc5xKmWltU3ICogQRyDh5xFFVnkH77prWTI0w658',
-  secret: '7UGxHr0de0eQbP3Nk44OJeBJBQxKydme20hjBuAvCe9'
+  apiKey: '0000000000000000000000000000000000000000000',
+  secret: '0000000000000000000000000000000000000000000'
 });
 const bittrex = new ccxt.bittrex({
-  apiKey: 'e1121fd699dc4bd380aefc9d497b26b6',
-  secret: '038ce2903a114dbc9da7928b67053ced'
+  apiKey: '00000000000000000000000000000000',
+  secret: '00000000000000000000000000000000'
 });
 const PRIMARY_MARKET = hitbtc;
 const SECONDARY_MARKET = bitfinex;
@@ -379,7 +379,7 @@ export const Nash = async () => {
   const highestReturn = Math.max(permutationOneReturn, permutationTwoReturn, permutationThreeReturn, permutationFourReturn, permutationFiveReturn, permutationSixReturn);
   const highestReturnRate = Math.max(permutationOneReturnRate, permutationTwoReturnRate, permutationThreeReturnRate, permutationFourReturnRate, permutationFiveReturnRate, permutationSixReturnRate);
   const MINIMUM_BTC_TRADE_VOLUME = .0015; // Because we don't want to trade tiny LTC amounts, for example
-
+  // console.log(highestReturnRate);
   if (highestReturnRate > MINIMUM_RETURN_RATE) {
     console.log('==========');
     console.log('TRADE PROFIT RATES');
@@ -415,7 +415,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
-        primaryBuyOrder.then( () => {
+        primaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -430,7 +431,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiaryBuyOrder, retrying... ***');
-        tertiaryBuyOrder.then( () => {
+        tertiaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -445,7 +447,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondarySellOrder, retrying... ***');
-        secondarySellOrder.then( () => {
+        secondarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -472,7 +475,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondaryBuyOrder, retrying... ***');
-        secondaryBuyOrder.then( () => {
+        secondaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -487,7 +491,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiarySellOrder, retrying... ***');
-        tertiarySellOrder.then( () => {
+        tertiarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -502,7 +507,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
-        primarySellOrder.then( () => {
+        primarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -529,7 +535,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondaryBuyOrder, retrying... ***');
-        secondaryBuyOrder.then( () => {
+        secondaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -544,7 +551,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiaryBuyOrder, retrying... ***');
-        tertiaryBuyOrder.then( () => {
+        tertiaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -559,7 +567,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
-        primarySellOrder.then( () => {
+        primarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -586,7 +595,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
-        primaryBuyOrder.then( () => {
+        primaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -601,7 +611,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiarySellOrder, retrying... ***');
-        tertiarySellOrder.then( () => {
+        tertiarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -616,7 +627,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondarySellOrder, retrying... ***');
-        secondarySellOrder.then( () => {
+        secondarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -643,7 +655,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
-        primaryBuyOrder.then( () => {
+        primaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -658,7 +671,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiaryBuyOrder, retrying... ***');
-        tertiaryBuyOrder.then( () => {
+        tertiaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -673,7 +687,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
-        primarySellOrder.then( () => {
+        primarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -700,7 +715,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
-        primaryBuyOrder.then( () => {
+        primaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -715,7 +731,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: tertiarySellOrder, retrying... ***');
-        tertiarySellOrder.then( () => {
+        tertiarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -730,7 +747,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
-        primarySellOrder.then( () => {
+        primarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry completed');
         });
       });
@@ -764,7 +782,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
-        primarySellOrder.then( () => {
+        primarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -779,7 +798,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondaryBuyOrder, retrying... ***');
-        secondaryBuyOrder.then( () => {
+        secondaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -807,7 +827,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondarySellOrder, retrying... ***');
-        secondarySellOrder.then( () => {
+        secondarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -817,7 +838,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
-        primaryBuyOrder.then( () => {
+        primaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -840,7 +862,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
-        primarySellOrder.then( () => {
+        primarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -855,7 +878,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondaryBuyOrder, retrying... ***');
-        secondaryBuyOrder.then( () => {
+        secondaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -883,7 +907,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: secondarySellOrder, retrying... ***');
-        secondarySellOrder.then( () => {
+        secondarySellOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -893,7 +918,8 @@ export const Nash = async () => {
       }, (rejection) => {
         console.log(rejection);
         console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
-        primaryBuyOrder.then( () => {
+        primaryBuyOrder.then( (success, error) => {
+          console.log(error);
           console.log('Retry attempted');
         });
       });
@@ -946,7 +972,8 @@ export const Nash = async () => {
         }, (rejection) => {
           console.log(rejection);
           console.log('*** TIMED OUT: cancelSellOrder, retrying... ***');
-          cancelSellOrder.then( () => {
+          cancelSellOrder.then( (success, error) => {
+            console.log(error);
             console.log('Retry attempted');
           });
         });
@@ -964,7 +991,8 @@ export const Nash = async () => {
         }, (rejection) => {
           console.log(rejection);
           console.log('*** TIMED OUT: cancelBuyOrder, retrying... ***');
-          cancelBuyOrder.then( () => {
+          cancelBuyOrder.then( (success, error) => {
+            console.log(error);
             console.log('Retry attempted');
           });
         });
@@ -1003,7 +1031,8 @@ export const Nash = async () => {
     }, (rejection) => {
       console.log(rejection);
       console.log('*** TIMED OUT: primarySellOrder, retrying... ***');
-      primarySellOrder.then( () => {
+      primarySellOrder.then( (success, error) => {
+        console.log(error);
         console.log('Retry attempted');
       });
     });
@@ -1013,7 +1042,8 @@ export const Nash = async () => {
     }, (rejection) => {
       console.log(rejection);
       console.log('*** TIMED OUT: primaryBuyOrder, retrying... ***');
-      primaryBuyOrder.then( () => {
+      primaryBuyOrder.then( (success, error) => {
+        console.log(error);
         console.log('Retry attempted');
       });
     });
